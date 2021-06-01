@@ -1,0 +1,11 @@
+C:\Users\1\source\repos\SpaceShooterV3.0\SpaceShooterV3.0\bin\Debug\SpaceShooterV3.0.exe.config
+C:\Users\1\source\repos\SpaceShooterV3.0\SpaceShooterV3.0\bin\Debug\SpaceShooterV3.0.exe
+C:\Users\1\source\repos\SpaceShooterV3.0\SpaceShooterV3.0\bin\Debug\SpaceShooterV3.0.pdb
+C:\Users\1\source\repos\SpaceShooterV3.0\SpaceShooterV3.0\obj\Debug\SpaceShooterV3.0.csprojAssemblyReference.cache
+C:\Users\1\source\repos\SpaceShooterV3.0\SpaceShooterV3.0\obj\Debug\SpaceShooterV3._0.Form1.resources
+C:\Users\1\source\repos\SpaceShooterV3.0\SpaceShooterV3.0\obj\Debug\SpaceShooterV3._0.Properties.Resources.resources
+C:\Users\1\source\repos\SpaceShooterV3.0\SpaceShooterV3.0\obj\Debug\SpaceShooterV3._0.Sprites.resources
+C:\Users\1\source\repos\SpaceShooterV3.0\SpaceShooterV3.0\obj\Debug\SpaceShooterV3.0.csproj.GenerateResource.cache
+C:\Users\1\source\repos\SpaceShooterV3.0\SpaceShooterV3.0\obj\Debug\SpaceShooterV3.0.csproj.CoreCompileInputs.cache
+C:\Users\1\source\repos\SpaceShooterV3.0\SpaceShooterV3.0\obj\Debug\SpaceShooterV3.0.exe
+C:\Users\1\source\repos\SpaceShooterV3.0\SpaceShooterV3.0\obj\Debug\SpaceShooterV3.0.pdb
