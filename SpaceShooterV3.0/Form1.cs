@@ -5,7 +5,7 @@ namespace SpaceShooterV3._0
 {
     public partial class Form1 : Form
     {
-        bool moveLeft, moveRight, isShooting, isGameOver,enemyIsShooting, autoShooting;
+        bool moveLeft, moveRight, isShooting, isGameOver, enemyIsShooting, autoShooting;
         int score = 0;
         int health = 3;
         readonly int playerSpeed = 12;
@@ -15,6 +15,7 @@ namespace SpaceShooterV3._0
         int EbulletSpeed;
         int bombSpeed = 10;
         int heartsSpeed = 8;
+        int priority;
 
         readonly Random rnd = new Random();
 
@@ -36,7 +37,7 @@ namespace SpaceShooterV3._0
             // Условия проигрыша
             if (Enemy1.Top > 710 || Enemy2.Top > 710 || Enemy3.Top > 710 || ShootingEnemy.Top > 710 || health == 0)
             {
-               GameOver();
+                GameOver();
             }
             // Движение персонажа + не дает выйти за пределы формы 
             if (moveLeft == true && Player.Left > 0)
@@ -52,6 +53,7 @@ namespace SpaceShooterV3._0
             // Не дает спамить выстрелами
             if (isShooting == true)
             {
+
                 bulletSpeed = 20;
                 Bullet.Top -= bulletSpeed;
             }
@@ -59,6 +61,10 @@ namespace SpaceShooterV3._0
             {
                 Bullet.Left = -300;
                 bulletSpeed = 0;
+            }
+            if (Bullet.Top < 0)
+            {
+                isShooting = false;
             }
             //Не дает спамить выстрелами врагу
             if (enemyIsShooting == true)
@@ -71,16 +77,11 @@ namespace SpaceShooterV3._0
                 EBullet.Left = -300;
                 EbulletSpeed = 0;
             }
-
-            if (Bullet.Top < 0)
-            {
-                isShooting = false;
-            }
             if (EBullet.Top < 0 || EBullet.Top > 710)
             {
                 enemyIsShooting = false;
             }
-            
+
             if (enemyIsShooting == false)
             {
                 enemyIsShooting = true;
@@ -139,8 +140,6 @@ namespace SpaceShooterV3._0
                 Hearts.Left = -300;
                 AddHealth();
             }
-
-
             // Отреспавн бомбы
             if (Bomb.Top >= 710)
             {
@@ -153,9 +152,9 @@ namespace SpaceShooterV3._0
                 Hearts.Top = -1000;
                 Hearts.Left = rnd.Next(20, 550);
             }
-            label1.Text = autoShooting.ToString();
-            label2.Text = Player.Left.ToString();
-            label3.Text = Enemy1.Left.ToString();
+            label1.Text = priority.ToString();
+
+            label3.Text = EBullet.Top.ToString();
             PseudoAI();
         }
 
@@ -168,7 +167,7 @@ namespace SpaceShooterV3._0
                     break;
                 case "Right":
                     moveRight = true;
-                    break; 
+                    break;
             }
         }
 
@@ -184,12 +183,7 @@ namespace SpaceShooterV3._0
                     moveRight = false;
                     break;
                 case "Space":
-                    if (isShooting == false)
-                    {
-                        isShooting = true;
-                        Bullet.Top = Player.Top - 30;
-                        Bullet.Left = Player.Left - 13 + (Player.Width / 2);
-                    }
+                    Shoot();
                     break;
                 case "E":
                     autoShooting = true;
@@ -201,7 +195,7 @@ namespace SpaceShooterV3._0
             }
         }
 
-        
+
 
         private void ResetGame()//рестарт игры
         {
@@ -212,7 +206,7 @@ namespace SpaceShooterV3._0
             Enemy1.Left = rnd.Next(20, 550);
             Enemy2.Left = rnd.Next(20, 550);
             Enemy3.Left = rnd.Next(20, 550);
-            ShootingEnemy.Left = rnd.Next(20,550);
+            ShootingEnemy.Left = rnd.Next(20, 550);
             Bomb.Left = rnd.Next(20, 550);
             Hearts.Left = rnd.Next(20, 550);
 
@@ -226,48 +220,101 @@ namespace SpaceShooterV3._0
             score = 0;
             health = 3;
 
-            
+
             ScoreText.Text = score.ToString();
             isShooting = false;
             HealthLabel.Text = health.ToString();
         }
 
-        private void PseudoAI()// Псевдо-искусственный интеллект
+        private void PseudoAI()// Псевдо-искусственный интеллект для управления
         {
             if (autoShooting == true)
             {
-                if ((Player.Left < Enemy1.Left && Enemy1.Top > 0) || (Player.Left < Enemy2.Left && Enemy2.Top > 0)
-                    || (Player.Left < Enemy3.Left && Enemy3.Top > 0) || (Player.Left < ShootingEnemy.Left && ShootingEnemy.Top > 0))
+                if (Enemy1.Top > Enemy2.Top && Enemy1.Top > Enemy3.Top && Enemy1.Top > ShootingEnemy.Top)
                 {
-                    Player.Left += playerSpeed;
+                    priority = 1;
                 }
-                else if ((Player.Left > Enemy1.Left && Enemy1.Top > 0) || (Player.Left > Enemy2.Left && Enemy2.Top > 0)
-                    || (Player.Left > Enemy3.Left && Enemy3.Top > 0) || (Player.Left > ShootingEnemy.Left && ShootingEnemy.Top > 0))
+                else if (Enemy2.Top > Enemy1.Top && Enemy2.Top > Enemy3.Top && Enemy2.Top > ShootingEnemy.Top)
                 {
-                    Player.Left -= playerSpeed;
+                    priority = 2;
                 }
-                if (Player.Left <= Enemy1.Left + 10 || Player.Left >= Enemy1.Left - 10 ||
-                    Player.Left <= Enemy2.Left + 10 || Player.Left >= Enemy2.Left - 10 || 
-                    Player.Left <= Enemy3.Left + 10 || Player.Left >= Enemy3.Left - 10 ||
-                    Player.Left <= ShootingEnemy.Left + 10 || Player.Left >= ShootingEnemy.Left - 10)
+                else if (Enemy3.Top > Enemy1.Top && Enemy3.Top > Enemy2.Top && Enemy3.Top > ShootingEnemy.Top)
                 {
-                    if (isShooting == false)
+                    priority = 3;
+                }
+                else if (ShootingEnemy.Top > Enemy1.Top && ShootingEnemy.Top > Enemy2.Top && ShootingEnemy.Top > Enemy3.Top)
+                {
+                    priority = 4;
+                }
+                if (priority == 1)
+                {
+                    if (Player.Left < Enemy1.Left && Enemy1.Top > 0)
                     {
-                        isShooting = true;
-                        Bullet.Top = Player.Top - 30;
-                        Bullet.Left = Player.Left - 13 + (Player.Width / 2);
+                        Player.Left += playerSpeed;
+                    }
+                    if (Player.Left > Enemy1.Left && Enemy1.Top > 0)
+                    {
+                        Player.Left -= playerSpeed;
+                    }
+                    if (Player.Left <= Enemy1.Left + 10 || Player.Left >= Enemy1.Left - 10)
+                    {
+                        Shoot();
                     }
                 }
-
+                else if (priority == 2)
+                {
+                    if (Player.Left < Enemy2.Left && Enemy2.Top > 0)
+                    {
+                        Player.Left += playerSpeed;
+                    }
+                    if (Player.Left > Enemy2.Left && Enemy2.Top > 0)
+                    {
+                        Player.Left -= playerSpeed;
+                    }
+                    if (Player.Left <= Enemy2.Left + 10 || Player.Left >= Enemy2.Left - 10)
+                    {
+                        Shoot();
+                    }
+                }
+                else if (priority == 3)
+                {
+                    if (Player.Left < Enemy3.Left && Enemy3.Top > 0)
+                    {
+                        Player.Left += playerSpeed;
+                    }
+                    if (Player.Left > Enemy3.Left && Enemy3.Top > 0)
+                    {
+                        Player.Left -= playerSpeed;
+                    }
+                    if (Player.Left <= Enemy3.Left + 10 || Player.Left >= Enemy3.Left - 10)
+                    {
+                        Shoot();
+                    }
+                }
+                else if (priority == 4)
+                {
+                    if (Player.Left < ShootingEnemy.Left && ShootingEnemy.Top > 0)
+                    {
+                        Player.Left += playerSpeed;
+                    }
+                    if (Player.Left > ShootingEnemy.Left && ShootingEnemy.Top > 0)
+                    {
+                        Player.Left -= playerSpeed;
+                    }
+                    if (Player.Left <= ShootingEnemy.Left + 10 || Player.Left >= ShootingEnemy.Left - 10)
+                    {
+                        Shoot();
+                    }
+                }
             }
-           
+
         }
 
         private void GameOver()//Сообщаем о проигрыше
         {
             isGameOver = true;
             GameTimer.Stop();
-            ScoreText.Text =  score.ToString() + Environment.NewLine + "Game Over!!!" + Environment.NewLine + "Press Enter to try again.";
+            ScoreText.Text = score.ToString() + Environment.NewLine + "Game Over!!!" + Environment.NewLine + "Press Enter to try again.";
         }
 
         private void AddScore()// Добавляем очки
@@ -284,6 +331,16 @@ namespace SpaceShooterV3._0
         {
             health += 1;
             HealthLabel.Text = health.ToString();
+        }
+
+        private void Shoot()//Делаем выстрел
+        {
+            if (isShooting == false)
+            {
+                isShooting = true;
+                Bullet.Top = Player.Top - 30;
+                Bullet.Left = Player.Left - 13 + (Player.Width / 2);
+            }
         }
     }
 }
